@@ -1,0 +1,51 @@
+[
+  {
+    "id": "bot_khatt",
+    "title": "بوت خط",
+    "price": 10,
+    "filename": "بوت_خط.py",
+    "category": "ديسكورد بوتات"
+  },
+  {
+    "id": "bot_welcome",
+    "title": "بوت ترحيب",
+    "price": 15,
+    "filename": "بوت_ترحيب.py",
+    "category": "ديسكورد بوتات"
+  },
+  {
+    "id": "bot_protect",
+    "title": "بوت حماية (ضد الروابط و السبام)",
+    "price": 20,
+    "filename": "بوت_حماية.py",
+    "category": "ديسكورد بوتات"
+  },
+  {
+    "id": "rbx_chat",
+    "title": "شات روبلوكس",
+    "price": 75,
+    "filename": "شات_روبلوكس.lua",
+    "category": "روبلكس لاوا"
+  },
+  {
+    "id": "rbx_leaderboard",
+    "title": "لائحة متصدرين للوقت",
+    "price": 15,
+    "filename": "لائحة_متصدرين.lua",
+    "category": "روبلكس لاوا"
+  },
+  {
+    "id": "ai_openai",
+    "title": "بوت ديسكورد (OpenAI API)",
+    "price": 30,
+    "filename": "ai_openai.py",
+    "category": "الذكاء الاصطناعي"
+  },
+  {
+    "id": "ai_claude",
+    "title": "بوت ديسكورد (Claude API)",
+    "price": 35,
+    "filename": "ai_claude.py",
+    "category": "الذكاء الاصطناعي"
+  }
+]

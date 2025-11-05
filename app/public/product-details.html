@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تفاصيل المنتج</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: "Tahoma", sans-serif;
+      background-color: #f9f9f9;
+      color: #222;
+      padding: 20px;
+      direction: rtl;
+    }
+    #product-title {
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    #product-price {
+      color: #2e7d32;
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+    #product-description {
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    #buy-now {
+      background-color: #1565c0;
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    #buy-now:focus {
+      outline: 2px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <div id="product-details">
+    <div id="product-title">جارٍ التحميل...</div>
+    <div id="product-price"></div>
+    <div id="product-description"></div>
+    <button id="buy-now" style="display:none;">اشتري الآن</button>
+  </div>
+
+  <script>
+    async function loadProduct() {
+      const params = new URLSearchParams(window.location.search);
+      const productId = params.get('productId');
+      if (!productId) {
+        document.getElementById('product-title').textContent = 'لم يتم العثور على المنتج';
+        return;
+      }
+
+      try {
+        const res = await fetch('/products');
+        const products = await res.json();
+        const product = products.find(p => String(p.id) === productId);
+
+        if (!product) {
+          document.getElementById('product-title').textContent = 'المنتج غير موجود';
+          return;
+        }
+
+        document.getElementById('product-title').textContent = product.title;
+        document.getElementById('product-price').textContent = 'السعر: ' + product.price + ' ريال';
+        document.getElementById('product-description').textContent = product.description || '';
+
+        const buyBtn = document.getElementById('buy-now');
+        buyBtn.style.display = 'inline-block';
+        buyBtn.onclick = async () => {
+          try {
+            const checkoutRes = await fetch('/create-checkout-session', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ productId: product.id })
+            });
+            const data = await checkoutRes.json();
+            if (data.url) {
+              window.location.href = data.url;
+            } else {
+              alert('حدث خطأ أثناء إنشاء جلسة الدفع');
+            }
+          } catch (err) {
+            console.error('خطأ:', err);
+            alert('تعذر إتمام العملية');
+          }
+        };
+      } catch (e) {
+        document.getElementById('product-title').textContent = 'خطأ في تحميل المنتج';
+        console.error(e);
+      }
+    }
+
+    loadProduct();
+  </script>
+</body>
+</html>

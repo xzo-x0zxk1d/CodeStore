@@ -1,0 +1,22 @@
+{
+  "name": "kood-store",
+  "version": "0.1.0",
+  "description": "كود ستور - متجر لبيع أكواد (نموذج) مع Stripe Checkout",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "stripe": "^11.13.0",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5"
+  },
+  "optionalDependencies": {
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}

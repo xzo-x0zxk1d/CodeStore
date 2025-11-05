@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>سلة المشتريات</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: "Tahoma", sans-serif;
+      background-color: #f9f9f9;
+      color: #222;
+      padding: 20px;
+      direction: rtl;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #eee;
+    }
+    .remove-item {
+      background-color: #d32f2f;
+      color: #fff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #cart-total {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .checkout-btn {
+      background-color: #2e7d32;
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>سلة المشتريات</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>المنتج</th>
+        <th>الكمية</th>
+        <th>السعر</th>
+        <th>المجموع</th>
+        <th>إزالة</th>
+      </tr>
+    </thead>
+    <tbody id="cart-items"></tbody>
+  </table>
+  <div id="cart-total">الإجمالي: 0 ريال</div>
+  <button class="checkout-btn" onclick="checkout()">ادفع الآن</button>
+
+  <script>
+    function loadCart() {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const tbody = document.getElementById('cart-items');
+      tbody.innerHTML = '';
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        const subtotal = item.price * item.qty;
+        total += subtotal;
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.title}</td>
+          <td>${item.qty}</td>
+          <td>${item.price} ريال</td>
+          <td>${subtotal} ريال</td>
+          <td><button class="remove-item" onclick="removeItem(${index})">✕</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      document.getElementById('cart-total').textContent = 'الإجمالي: ' + total + ' ريال';
+    }
+
+    function removeItem(index) {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      cart.splice(index, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      loadCart();
+    }
+
+    function checkout() {
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      if (cart.length === 0) {
+        alert('السلة فارغة');
+        return;
+      }
+      // Prototype: send first item or all IDs
+      const itemIds = cart.map(i => i.id);
+      // Example: redirect to server checkout
+      window.location.href = '/create-checkout-session?items=' + encodeURIComponent(JSON.stringify(itemIds));
+    }
+
+    loadCart();
+  </script>
+</body>
+</html>

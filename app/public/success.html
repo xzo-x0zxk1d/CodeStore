@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>نجاح الدفع</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: "Tahoma", sans-serif;
+      background-color: #f4f4f4;
+      color: #222;
+      padding: 20px;
+      direction: rtl;
+    }
+    h1 {
+      color: #2e7d32;
+    }
+    #receipt {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      padding: 16px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+    }
+    #download-link {
+      display: block;
+      margin-top: 10px;
+      color: #1565c0;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    #top-sales {
+      background-color: #fff;
+      border: 1px solid #ccc;
+      padding: 16px;
+      border-radius: 6px;
+    }
+    .bold-line {
+      font-weight: bold;
+      margin-top: 12px;
+      color: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="status-message">جارٍ التحقق من الدفع...</h1>
+  <div id="receipt"></div>
+  <div id="top-sales"></div>
+
+  <script>
+    async function loadSuccessPage() {
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get('session_id');
+      if (!sessionId) {
+        document.getElementById('status-message').textContent = 'فشل الدفع';
+        return;
+      }
+
+      try {
+        const sessionRes = await fetch(`/session?session_id=${sessionId}`);
+        const sessionData = await sessionRes.json();
+
+        if (!sessionData.success) {
+          document.getElementById('status-message').textContent = 'فشل الدفع';
+          return;
+        }
+
+        document.getElementById('status-message').textContent = 'تم الدفع بنجاح';
+
+        const receipt = document.getElementById('receipt');
+        receipt.innerHTML = `
+          <div>المنتج: ${sessionData.product_name}</div>
+          <div>السعر: ${sessionData.price} ريال</div>
+          <a id="download-link" href="/download/${sessionData.filename}?session_id=${sessionId}">تحميل المنتج</a>
+          <div class="bold-line">يرجى أخذ لقطة للشاشة كإيصال</div>
+        `;
+
+        const topRes = await fetch('/top-sales');
+        const topData = await topRes.json();
+        const topSales = document.getElementById('top-sales');
+        topSales.innerHTML = '<h2>الأكثر مبيعًا</h2><ul>' +
+          topData.slice(0, 5).map(item => `<li>${item.title} - ${item.price} ريال</li>`).join('') +
+          '</ul>';
+      } catch (err) {
+        document.getElementById('status-message').textContent = 'فشل الدفع';
+        console.error('خطأ في تحميل البيانات:', err);
+      }
+    }
+
+    loadSuccessPage();
+  </script>
+</body>
+</html>

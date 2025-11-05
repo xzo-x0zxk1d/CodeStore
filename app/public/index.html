@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>كود ستور</title>
+  <style>
+    body {
+      font-family: "Tahoma", sans-serif;
+      background-color: #f9f9f9;
+      color: #222;
+      margin: 0;
+      padding: 20px;
+      direction: rtl;
+    }
+    .storefront {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+    }
+    .product-card {
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 16px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .product-title {
+      font-weight: bold;
+      font-size: 1.1em;
+      margin-bottom: 8px;
+    }
+    .product-price {
+      color: #333;
+      margin-bottom: 6px;
+    }
+    .product-category {
+      font-size: 0.9em;
+      color: #555;
+      margin-bottom: 6px;
+    }
+    .product-description {
+      font-size: 0.9em;
+      margin-bottom: 10px;
+    }
+    .buy-btn, .add-cart-btn {
+      display: inline-block;
+      margin: 4px 2px;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+    .buy-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .add-cart-btn {
+      background-color: #2196F3;
+      color: white;
+    }
+    .buy-btn:focus, .add-cart-btn:focus {
+      outline: 2px solid #000;
+    }
+  </style>
+</head>
+<body>
+  <h1>المتجر</h1>
+  <section class="storefront" id="storefront"></section>
+
+  <script>
+    async function loadProducts() {
+      try {
+        const res = await fetch('/products');
+        const products = await res.json();
+        const container = document.getElementById('storefront');
+        products.forEach(p => {
+          const card = document.createElement('div');
+          card.className = 'product-card';
+          card.innerHTML = `
+            <div class="product-title">${p.title}</div>
+            <div class="product-price">السعر: ${p.price} ريال</div>
+            <div class="product-category">الفئة: ${p.category}</div>
+            ${p.description ? `<div class="product-description">${p.description}</div>` : ''}
+            <button class="buy-btn">اشتري الآن</button>
+            <button class="add-cart-btn">أضف إلى السلة</button>
+          `;
+          container.appendChild(card);
+        });
+      } catch (e) {
+        console.error('خطأ في تحميل المنتجات', e);
+      }
+    }
+    loadProducts();
+  </script>
+</body>
+</html>
